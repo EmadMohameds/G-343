@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up - Group G-343</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="bg-animation"></div>
+    <div class="toast-container" id="toastContainer"></div>
+
+    <div class="auth-container">
+        <div class="auth-card">
+            <div class="auth-logo">
+                <div class="icon">🚀</div>
+                <h1>Create Account</h1>
+                <p>Join Group G-343 today</p>
+            </div>
+            <div class="error-msg" id="signupError"></div>
+            <div class="success-msg" id="signupSuccess"></div>
+            <form id="signupForm">
+                <div class="form-group">
+                    <label>Full Name</label>
+                    <input type="text" id="signupName" placeholder="Enter your full name" required autocomplete="off">
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="signupPassword" placeholder="Create a strong password" required>
+                    <div class="password-requirements" id="passwordReqs">
+                        <span id="req-length">✓ 8+ chars</span>
+                        <span id="req-upper">✓ Uppercase</span>
+                        <span id="req-lower">✓ Lowercase</span>
+                        <span id="req-number">✓ Number</span>
+                        <span id="req-special">✓ Special</span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Confirm Password</label>
+                    <input type="password" id="signupConfirm" placeholder="Confirm your password" required>
+                </div>
+                <button type="submit" class="btn-primary">Sign Up</button>
+            </form>
+            <div class="auth-footer">
+                Already have an account? <a href="login.html">Login</a>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        document.getElementById('signupPassword').addEventListener('input', function() {
+            updatePasswordUI(this.value);
+        });
+
+        document.getElementById('signupForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            var name = document.getElementById('signupName').value.trim();
+            var password = document.getElementById('signupPassword').value;
+            var confirm = document.getElementById('signupConfirm').value;
+            var errorEl = document.getElementById('signupError');
+            var successEl = document.getElementById('signupSuccess');
+
+            errorEl.classList.remove('show');
+            successEl.classList.remove('show');
+
+            if (!name || !password || !confirm) {
+                errorEl.textContent = 'Please fill in all fields.';
+                errorEl.classList.add('show');
+                return;
+            }
+
+            var existing = DB.users.find(function(u) {
+                return u.name.toLowerCase() === name.toLowerCase();
+            });
+            if (existing) {
+                errorEl.textContent = 'This name is already taken. Please choose another one.';
+                errorEl.classList.add('show');
+                return;
+            }
+
+            if (!updatePasswordUI(password)) {
+                errorEl.textContent = 'Password does not meet all requirements.';
+                errorEl.classList.add('show');
+                return;
+            }
+
+            if (password !== confirm) {
+                errorEl.textContent = 'Passwords do not match.';
+                errorEl.classList.add('show');
+                return;
+            }
+
+            // FIX: Determine role based on name
+            var role = 'Student';
+            if (name === 'Alaa Ayman') {
+                role = 'Tutor';
+            } else if (name === 'Emad Mohamed') {
+                role = 'Admin';
+            }
+
+            var user = {
+                name: name,
+                password: password,
+                role: role,
+                joinedAt: new Date().toISOString()
+            };
+
+            DB.users.push(user);
+            saveDB();
+
+            successEl.textContent = 'Account created successfully! Redirecting to login...';
+            successEl.classList.add('show');
+            setTimeout(function() {
+                window.location.href = 'login.html';
+            }, 2000);
+        });
+
+        if (DB.currentUser) {
+            window.location.href = 'index.html';
+        }
+    </script>
+</body>
+</html>

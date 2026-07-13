@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Group G-343 - Student Portal</title>
+    <link rel="stylesheet" href="style.css">
+<base target="_blank">
+<base target="_blank">
+</head>
+<body>
+    <div class="bg-animation"></div>
+    <div class="toast-container" id="toastContainer"></div>
+
+    <div class="dashboard">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-brand">
+                <h2><span class="brand-icon">🎓</span> G-343</h2>
+                <div class="points-badge" id="pointsBadge">⭐ 0</div>
+            </div>
+            <nav>
+                <ul class="nav-menu" id="navMenu">
+                    <li class="nav-item">
+                        <button class="nav-link active" onclick="showSection('home', this)">
+                            <span class="nav-icon">🏠</span> Home
+                        </button>
+                    </li>
+                    <li class="nav-item">
+                        <button class="nav-link" onclick="showSection('members', this)">
+                            <span class="nav-icon">👥</span> Members
+                        </button>
+                    </li>
+                    <li class="nav-item">
+                        <button class="nav-link" onclick="showSection('chat', this)">
+                            <span class="nav-icon">💬</span> Group Chat
+                        </button>
+                    </li>
+                    <li class="nav-item" id="tutorFilesNav" style="display:none;">
+                        <button class="nav-link" onclick="showSection('tutorFiles', this)">
+                            <span class="nav-icon">📚</span> Tutor Files
+                        </button>
+                    </li>
+                    <li class="nav-item" id="myWorksNav">
+                        <button class="nav-link" onclick="showSection('myWorks', this)">
+                            <span class="nav-icon">🎨</span> My Works
+                        </button>
+                    </li>
+                    <li class="nav-item">
+                        <button class="nav-link" onclick="showSection('allWorks', this)">
+                            <span class="nav-icon">🏆</span> Student Works
+                        </button>
+                    </li>
+                    <li class="nav-item">
+                        <button class="nav-link" onclick="showSection('quiz', this)">
+                            <span class="nav-icon">🎯</span> Quiz Challenge
+                        </button>
+                    </li>
+
+                    <li class="nav-item" id="adminNav" style="display:none;">
+                        <button class="nav-link" onclick="showSection('admin', this)">
+                            <span class="nav-icon">⚙️</span> Admin Panel
+                        </button>
+                    </li>
+                </ul>
+            </nav>
+            <div class="sidebar-footer">
+                <div class="user-info">
+                    <div class="user-avatar" id="userAvatar">U</div>
+                    <div class="user-details">
+                        <h4 id="sidebarName">User</h4>
+                        <span id="sidebarRole">Student</span>
+                    </div>
+                </div>
+                <button class="nav-link" onclick="logout()" style="margin-top:12px;width:100%;">
+                    <span class="nav-icon">🚪</span> Logout
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- HOME SECTION -->
+            <div id="homeSection" class="section">
+                <div class="welcome-hero">
+                    <h1>Welcome <span class="highlight-name" id="welcomeName">User</span></h1>
+                    <div class="group-badge">Group G-343</div>
+                    <p>Your collaborative learning space starts here</p>
+                </div>
+
+                <div class="leaderboard">
+                    <div class="leaderboard-title">🏆 Leaderboard</div>
+                    <div id="leaderboard"></div>
+                </div>
+
+                <div class="section-card">
+                    <div class="section-header">
+                        <div class="section-title">
+                            <span class="section-icon" style="background:rgba(52,152,219,0.1);">📚</span>
+                            Recent Tutor Files
+                        </div>
+                    </div>
+                    <div class="files-grid" id="recentTutorFiles"></div>
+                </div>
+
+                <div class="section-card">
+                    <div class="section-header">
+                        <div class="section-title">
+                            <span class="section-icon" style="background:rgba(243,156,18,0.1);">👥</span>
+                            Recent Members
+                        </div>
+                    </div>
+                    <div class="members-grid" id="recentMembers"></div>
+                </div>
+            </div>
+
+            <!-- MEMBERS SECTION -->
+            <div id="membersSection" class="section hidden">
+                <div class="section-card">
+                    <div class="section-header">
+                        <div class="section-title">
+                            <span class="section-icon" style="background:rgba(243,156,18,0.1);">👥</span>
+                            All Members
+                        </div>
+                        <span class="member-time" id="membersCount">0 members</span>
+                    </div>
+                    <div class="members-grid" id="allMembers"></div>
+                </div>
+            </div>
+
+            <!-- CHAT SECTION -->
+            <div id="chatSection" class="section hidden">
+                <div class="section-card">
+                    <div class="section-header">
+                        <div class="section-title">
+                            <span class="section-icon" style="background:rgba(233,69,96,0.1);">💬</span>
+                            Group Chat
+                        </div>
+                        <span class="member-time" id="onlineCount">Online</span>
+                    </div>
+                    <div class="chat-container">
+                        <div class="chat-messages" id="chatMessages">
+                            <div class="chat-empty">No messages yet. Start the conversation!</div>
+                        </div>
+                        <div class="chat-input-area">
+                            <input type="text" class="chat-input" id="chatInput" placeholder="Type a message..." maxlength="500">
+                            <button class="chat-send-btn" onclick="sendMessage()">Send</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TUTOR FILES SECTION -->
+            <div id="tutorFilesSection" class="section hidden">
+                <div class="section-card">
+                    <div class="section-header">
+                        <div class="section-title">
+                            <span class="section-icon" style="background:rgba(52,152,219,0.1);">📚</span>
+                            Tutor Files
+                        </div>
+                    </div>
+                    <div id="tutorUploadArea" style="display:none;">
+                        <div class="file-upload-area" onclick="document.getElementById('tutorFileInput').click()">
+                            <div class="upload-icon">📤</div>
+                            <h3>Upload Tutor File</h3>
+                            <p>Click here to upload files for students</p>
+                            <input type="file" id="tutorFileInput" style="display:none" onchange="handleTutorFileUpload(event)">
+                        </div>
+                    </div>
+                    <div class="files-grid" id="tutorFilesGrid"></div>
+                </div>
+            </div>
+
+            <!-- MY WORKS SECTION -->
+            <div id="myWorksSection" class="section hidden">
+                <div class="section-card">
+                    <div class="section-header">
+                        <div class="section-title">
+                            <span class="section-icon" style="background:rgba(155,89,182,0.1);">🎨</span>
+                            My Works
+                        </div>
+                    </div>
+                    <div class="file-upload-area" onclick="document.getElementById('workFileInput').click()">
+                        <div class="upload-icon">📤</div>
+                        <h3>Submit Your Work</h3>
+                        <p>Share your projects, photos, or files with the group</p>
+                    </div>
+                    <div class="form-group" style="margin-top:16px;">
+                        <input type="text" id="workTitle" placeholder="Work Title (required)" style="margin-bottom:10px;">
+                        <textarea id="workDesc" placeholder="Description (optional)"></textarea>
+                        <input type="file" id="workFileInput" style="display:none" onchange="handleStudentWorkUpload(event)">
+                        <button class="btn-primary" onclick="document.getElementById('workFileInput').click()" style="margin-top:10px;">Choose File & Submit</button>
+                    </div>
+                    <div class="works-grid" id="studentWorksGrid"></div>
+                </div>
+            </div>
+
+            <!-- ALL STUDENT WORKS SECTION -->
+            <div id="allWorksSection" class="section hidden">
+                <div class="section-card">
+                    <div class="section-header">
+                        <div class="section-title">
+                            <span class="section-icon" style="background:rgba(243,156,18,0.1);">🏆</span>
+                            Student Works Gallery
+                        </div>
+                    </div>
+                    <div class="works-grid" id="allStudentWorksGrid"></div>
+                </div>
+            </div>
+
+            <!-- QUIZ CHALLENGE SECTION -->
+            <div id="quizSection" class="section hidden">
+                <!-- Tutor View -->
+                <div id="quizTutorView" style="display:none;">
+                    <div class="section-card">
+                        <div class="section-header">
+                            <div class="section-title">
+                                <span class="section-icon" style="background:rgba(46,204,113,0.1);">📝</span>
+                                Create Quiz
+                            </div>
+                        </div>
+                        <div class="quiz-create-form">
+                            <input type="text" id="quizTitle" placeholder="Quiz Title (e.g. Math Week 1)" style="margin-bottom:10px;">
+                            <textarea id="quizDesc" placeholder="Quiz Description" style="margin-bottom:10px; min-height:60px;"></textarea>
+                            <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:10px; margin-bottom:10px;">
+                                <div>
+                                    <label style="font-size:12px; color:var(--text-muted); display:block; margin-bottom:4px;">Questions</label>
+                                    <input type="number" id="quizQCount" value="3" min="1" max="20" style="margin-bottom:0;">
+                                </div>
+                                <div>
+                                    <label style="font-size:12px; color:var(--text-muted); display:block; margin-bottom:4px;">Options</label>
+                                    <input type="number" id="quizOptCount" value="4" min="2" max="6" style="margin-bottom:0;">
+                                </div>
+                                <div>
+                                    <label style="font-size:12px; color:var(--text-muted); display:block; margin-bottom:4px;">Points/Q</label>
+                                    <input type="number" id="quizPoints" value="10" min="1" style="margin-bottom:0;">
+                                </div>
+                            </div>
+                            <button class="btn-secondary" onclick="buildQuizForm()" style="margin-bottom:16px; width:100%;">✏️ Build Question Form</button>
+                            <div id="quizBuilder"></div>
+                            <button class="btn-primary" onclick="createQuiz()" style="margin-top:16px; width:100%;" id="quizCreateBtn">🚀 Publish Quiz</button>
+                        </div>
+                    </div>
+                    <div class="section-card">
+                        <div class="section-header">
+                            <div class="section-title">📋 My Quizzes</div>
+                        </div>
+                        <div id="quizManagerList"></div>
+                    </div>
+                </div>
+
+                <!-- Student View -->
+                <div id="quizStudentView">
+                    <div class="section-card">
+                        <div class="section-header">
+                            <div class="section-title">
+                                <span class="section-icon" style="background:rgba(52,152,219,0.1);">🎯</span>
+                                Available Quizzes
+                            </div>
+                        </div>
+                        <div id="quizTakingArea" style="display:none;"></div>
+                        <div class="quizzes-grid" id="availableQuizzes"></div>
+                    </div>
+                    <div class="section-card">
+                        <div class="section-header">
+                            <div class="section-title">
+                                <span class="section-icon" style="background:rgba(155,89,182,0.1);">📊</span>
+                                My Quiz Results
+                            </div>
+                        </div>
+                        <div id="myQuizResults"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ADMIN PANEL SECTION -->
+            <div id="adminSection" class="section hidden">
+                <div class="section-card">
+                    <div class="section-header">
+                        <div class="section-title">
+                            <span class="section-icon" style="background:rgba(231,76,60,0.1);">⚙️</span>
+                            Admin Panel
+                        </div>
+                    </div>
+                    <div class="admin-tabs">
+                        <button class="admin-tab active" onclick="showAdminTab('Users')">Users</button>
+                        <button class="admin-tab" onclick="showAdminTab('Messages')">Messages</button>
+                        <button class="admin-tab" onclick="showAdminTab('Works')">Works</button>
+                    </div>
+                    <div id="adminUsers" class="admin-view">
+                        <table class="admin-table">
+                            <thead><tr><th>Name</th><th>Role</th><th>Joined</th><th>Action</th></tr></thead>
+                            <tbody id="adminUsersTable"></tbody>
+                        </table>
+                    </div>
+                    <div id="adminMessages" class="admin-view hidden">
+                        <table class="admin-table">
+                            <thead><tr><th>Sender</th><th>Message</th><th>Time</th><th>Action</th></tr></thead>
+                            <tbody id="adminMessagesTable"></tbody>
+                        </table>
+                    </div>
+                    <div id="adminWorks" class="admin-view hidden">
+                        <table class="admin-table">
+                            <thead><tr><th>Title</th><th>Student</th><th>Type</th><th>Rating</th><th>Action</th></tr></thead>
+                            <tbody id="adminWorksTable"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        // Check auth and init
+        if (!DB.currentUser) {
+            window.location.href = 'login.html';
+        } else {
+            initDashboard();
+        }
+
+        function initDashboard() {
+            var user = DB.currentUser;
+            if (!user) return;
+
+            document.getElementById('welcomeName').textContent = user.name;
+            document.getElementById('sidebarName').textContent = user.name;
+            document.getElementById('sidebarRole').textContent = user.role;
+            document.getElementById('userAvatar').textContent = user.name.charAt(0).toUpperCase();
+
+            if (user.role === 'Tutor') {
+                document.getElementById('sidebarRole').style.color = 'var(--tutor)';
+                document.getElementById('tutorFilesNav').style.display = 'block';
+                document.getElementById('tutorUploadArea').style.display = 'block';
+                document.getElementById('myWorksNav').style.display = 'none';
+                document.getElementById('quizTutorView').style.display = 'block';
+                document.getElementById('quizStudentView').style.display = 'none';
+
+            } else if (user.role === 'Admin') {
+                document.getElementById('sidebarRole').style.color = '#9b59b6';
+                document.getElementById('tutorFilesNav').style.display = 'block';
+                document.getElementById('adminNav').style.display = 'block';
+                document.getElementById('tutorUploadArea').style.display = 'block';
+                document.getElementById('quizTutorView').style.display = 'block';
+                document.getElementById('quizStudentView').style.display = 'none';
+
+            } else {
+                document.getElementById('quizTutorView').style.display = 'none';
+                document.getElementById('quizStudentView').style.display = 'block';
+
+            }
+
+            updatePointsBadge();
+            renderRecentMembers();
+            renderMembers();
+            renderChat();
+            renderLeaderboard();
+            renderTutorFiles();
+            renderRecentTutorFiles();
+            renderStudentWorks();
+            renderAllStudentWorks();
+            renderQuizManager();
+            renderAvailableQuizzes();
+            renderQuizResults();
+            
+        }
+
+        function showSection(section, btn) {
+            document.querySelectorAll('.section').forEach(function(s) { s.classList.add('hidden'); });
+            document.getElementById(section + 'Section').classList.remove('hidden');
+            document.querySelectorAll('.nav-link').forEach(function(l) { l.classList.remove('active'); });
+            if (btn) btn.classList.add('active');
+
+            if (section === 'members') renderMembers();
+            if (section === 'chat') renderChat();
+            if (section === 'tutorFiles') renderTutorFiles();
+            if (section === 'myWorks') renderStudentWorks();
+            if (section === 'allWorks') renderAllStudentWorks();
+            if (section === 'quiz') {
+                renderQuizManager();
+                renderAvailableQuizzes();
+                renderQuizResults();
+            }
+            
+            if (section === 'admin') {
+                renderAdminUsers();
+                renderAdminMessages();
+                renderAdminWorks();
+            }
+        }
+
+        document.getElementById('chatInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') sendMessage();
+        });
+
+        function logout() {
+            DB.currentUser = null;
+            saveDB();
+            window.location.href = 'login.html';
+        }
+    </script>
+</body>
+</html>

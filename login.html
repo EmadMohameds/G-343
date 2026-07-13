@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Group G-343</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="bg-animation"></div>
+    <div class="toast-container" id="toastContainer"></div>
+
+    <div class="auth-container">
+        <div class="auth-card">
+            <div class="auth-logo">
+                <div class="icon">🎓</div>
+                <h1>Welcome Back</h1>
+                <p>Sign in to Group G-343</p>
+            </div>
+            <div class="error-msg" id="loginError"></div>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label>Name</label>
+                    <input type="text" id="loginName" placeholder="Enter your name" required autocomplete="off">
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="loginPassword" placeholder="Enter your password" required>
+                </div>
+                <button type="submit" class="btn-primary">Login</button>
+            </form>
+            <div class="auth-footer">
+                Don't have an account? <a href="signup.html">Sign Up</a>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            var name = document.getElementById('loginName').value.trim();
+            var password = document.getElementById('loginPassword').value;
+            var errorEl = document.getElementById('loginError');
+            errorEl.classList.remove('show');
+
+            var user = DB.users.find(function(u) {
+                return u.name.toLowerCase() === name.toLowerCase() && u.password === password;
+            });
+
+            if (!user) {
+                errorEl.textContent = 'Invalid name or password.';
+                errorEl.classList.add('show');
+                return;
+            }
+
+            // FIX: Force correct role on every login
+            if (user.name === 'Alaa Ayman') {
+                user.role = 'Tutor';
+            } else if (user.name === 'Emad Mohamed') {
+                user.role = 'Admin';
+            } else {
+                user.role = 'Student';
+            }
+
+            DB.currentUser = user;
+            saveDB();
+            showToast('Welcome back, ' + user.name + '!', 'success');
+            setTimeout(function() {
+                window.location.href = 'index.html';
+            }, 1000);
+        });
+
+        if (DB.currentUser) {
+            window.location.href = 'index.html';
+        }
+    </script>
+</body>
+</html>
